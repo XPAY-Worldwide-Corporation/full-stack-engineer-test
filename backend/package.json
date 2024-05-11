@@ -1,8 +1,10 @@
 {
   "scripts": {
-    "start:main": "cd main && yarn start",
+    "start:api-gateway": "cd api-gateway && yarn start",
     "start:product": "cd product-service && yarn start",
     "start:user": "cd user-service && yarn start",
-    "start:all": "npm run start:main & npm run start:product & npm run start:user"
+    "start:payment": "cd payment-service && yarn start",
+    "start:order": "cd order-service && yarn start",
+    "start:all": "npm run start:api-gateway & npm run start:product & npm run start:user & npm run start:payment & npm run start:order"
   }
 }
