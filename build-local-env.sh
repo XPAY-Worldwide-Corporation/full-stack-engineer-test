@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define microservices directories
-declare -a microservices=("gateway" "products" "orders" "users" "cart" "payments")
+declare -a microservices=("api-gateway" "products" "orders" "users" "cart" "payments")
 
 # Install dependencies for each microservice
 for service in "${microservices[@]}"; do
