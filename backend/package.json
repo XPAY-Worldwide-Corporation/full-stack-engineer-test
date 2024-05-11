@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "start:main": "cd main && yarn start",
+    "start:product": "cd product-service && yarn start",
+    "start:user": "cd user-service && yarn start",
+    "start:all": "npm run start:main & npm run start:product & npm run start:user"
+  }
+}
