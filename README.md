@@ -2,6 +2,8 @@
 
 This repository contains a basic example of a monorepo setup for an e-commerce website. It includes backend microservices built with NestJS and a frontend Progressive Web App (PWA) using NextJS.
 
+Payment Integration were done using Stripe.
+
 For more detailed information about the backend microservices, please refer to the [Backend Services README](backend/README.md).
 
 ## Installation Instructions
