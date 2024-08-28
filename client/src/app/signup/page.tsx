@@ -44,19 +44,8 @@ const Index = () => {
           password: userData.password,
         });
 
-        if (result.data.success) {
+        if (result.status === 200) {
           toast.success(result.data.message, {
-            position: "top-right",
-            autoClose: 1200,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        } else {
-          toast.error("User registration failed.", {
             position: "top-right",
             autoClose: 1200,
             hideProgressBar: false,

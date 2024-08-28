@@ -4,7 +4,6 @@ import axios from "axios";
 import ProductCard from "@/app/components/ProductCard";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
-
 interface Product {
   id: number;
   title: string;
@@ -56,7 +55,7 @@ const Index = () => {
   }, [searchKey, products]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // @ts-ignore
+    //@ts-ignore
     if (e.target.value == "") return setFilteredProducts(products);
     setSearchKey(e.target.value);
   };

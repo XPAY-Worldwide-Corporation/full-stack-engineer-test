@@ -63,9 +63,10 @@ const Order = () => {
       if (orderedProductList && userData && typeof userData !== "boolean") {
         await apiServer.post("/api/order", {
           products: orderedProductList,
-          userId: userData._id,
+          userId: userData.user._id,
           totalPrice: price,
         });
+        router.push("/orderhistory");
       }
     }
   };

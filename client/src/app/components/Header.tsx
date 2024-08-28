@@ -10,6 +10,7 @@ import {
   ShoppingBagIcon,
 } from "@heroicons/react/24/outline";
 import auth from "@/app/utils/auth-help";
+
 interface User {
   _id: string;
   email: string;
@@ -40,6 +41,10 @@ export default function Header() {
     router.push("/order");
   };
 
+  const handleClick = () => {
+    router.push("/");
+  };
+
   return (
     <header className="bg-white">
       <nav
@@ -47,11 +52,14 @@ export default function Header() {
         className="flex items-center justify-between p-4 lg:px-20"
       >
         <div className="flex lg:flex-1">
-          <a href="/" className="-m-1.5 p-1.5">
+          <button
+            onClick={handleClick}
+            className="-m-1.5 p-1.5 focus:outline-none"
+          >
             <span className="">
               E-<span className="text-[#ff0097] font-bold">Commerce</span>
             </span>
-          </a>
+          </button>
         </div>
         <div className="flex lg:hidden">
           <button
@@ -64,9 +72,12 @@ export default function Header() {
           </button>
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+          <button
+            onClick={handleClick}
+            className="text-sm font-semibold leading-6 text-gray-900"
+          >
             Product
-          </a>
+          </button>
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <button
@@ -107,11 +118,11 @@ export default function Header() {
         <div className="fixed inset-0 z-10" />
         <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
-            <a href="#" className="-m-1.5 p-1.5">
+            <button onClick={handleClick} className="-m-1.5 p-1.5">
               <span className="">
                 E-<span className="text-[#ff0097] font-bold">Commerce</span>
               </span>
-            </a>
+            </button>
             <button
               type="button"
               onClick={() => setMobileMenuOpen(false)}
@@ -124,12 +135,12 @@ export default function Header() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
-                <a
-                  href="#"
+                <button
+                  onClick={handleClick}
                   className="text-sm font-semibold leading-6 text-gray-900"
                 >
                   Product
-                </a>
+                </button>
               </div>
               <div className="py-6">
                 <a href="/order" className="group -m-2 flex items-center p-2">

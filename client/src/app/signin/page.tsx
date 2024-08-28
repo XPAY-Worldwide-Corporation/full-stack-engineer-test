@@ -36,20 +36,20 @@ export default function Index() {
   const handleSubmit = async () => {
     if (!emailError && userData.password !== "") {
       try {
-        const res = await apiServer.post("/auth/signin", {
+        const result = await apiServer.post("/auth/signin", {
           email: userData.email,
           password: userData.password,
         });
-        const data = res.data;
-        if (data.success) {
-          auth.authenticate(data, () => {
+
+        if (result.status === 200) {
+          auth.authenticate(result.data, () => {
             router.push("/");
           });
         } else {
-          console.error("Registration failed:", data.message);
+          console.error("Login failed:", result.data.message);
         }
       } catch (error) {
-        console.error("An error occurred while registering:", error);
+        console.error("An error occurred while login:", error);
       }
     }
   };

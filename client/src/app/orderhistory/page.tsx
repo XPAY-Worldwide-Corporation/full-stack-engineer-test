@@ -1,223 +1,148 @@
 "use client";
-import { PencilIcon, XMarkIcon, CheckIcon } from "@heroicons/react/20/solid";
-import { useProductContext } from "@/context/ProductContext";
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import apiServer from "@/app/utils/apiServer";
-import auth from "@/app/utils/auth-help";
-import PlusAmount from "@/app/components/PlusAmount";
 
-interface User {
-  _id: string;
-  email: string;
-}
-interface Jwt {
-  token: string;
-  user: User;
+interface Product {
+  id: number;
+  title: string;
+  category: string;
+  description: string;
+  price: string;
+  image: string;
+  amount: number;
 }
 
-const Order = () => {
-  const { orderedProductList, setOrderedProductList } = useProductContext();
-  const [price, setPrice] = useState<number>(0);
-  const [userData, setUserData] = useState<Jwt | false | undefined>(undefined);
-  const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
-  const [quantity, setQuantity] = useState<number>(1);
+interface Order {
+  number: string;
+  created: string;
+  totalPrice: string;
+  products: Product[];
+}
+interface OrdersProps {
+  orders: Order[];
+}
+const OrderHistory = () => {
+  const [orderList, setOrderList] = useState<OrdersProps>();
 
   useEffect(() => {
-    const result = auth.isAuthenticated();
-    if (result && result.token && result.user) {
-      // Ensure result is of type Jwt
-      const jwt = result as Jwt;
-      setUserData(jwt);
-    } else {
-      setUserData(false);
-    }
+    const fetchProduct = async () => {
+      const orders = await apiServer.get("/api/order");
+      setOrderList(orders.data);
+    };
+    fetchProduct();
   }, []);
 
-  useEffect(() => {
-    const calculateTotalPrice = () => {
-      return orderedProductList.reduce(
-        // @ts-ignore
-        (total, item) => total + item.price * item.amount,
-        0
-      );
-    };
+  function formatDate(dateString: string) {
+    const date = new Date(dateString);
 
-    setPrice(calculateTotalPrice());
-  }, [orderedProductList]);
+    // Get day, month and year parts from the date object
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
 
-  const handlePurchase = async () => {
-    if (orderedProductList && userData) {
-      await apiServer.post("/api/order", {
-        products: orderedProductList,
-        // @ts-ignore
-        userId: userData._id,
-        totalPrice: price,
-      });
-    }
-  };
-
-  const handleRemove = (id: number) => {
-    // @ts-ignore
-    setOrderedProductList((prevList) =>
-      // @ts-ignore
-      prevList.filter((product) => product.id !== id)
-    );
-  };
-
-  const handleEdit = (id: number) => {
-    setSelectedProduct(id);
-  };
-
-  const handleUpdate = (id: number) => {
-    // @ts-ignore
-    setOrderedProductList((prevList) =>
-      // @ts-ignore
-      prevList.map((item) =>
-        item.id === id ? { ...item, amount: quantity } : item
-      )
-    );
-    resetSelection();
-  };
-
-  const handleQuantityChange = (newQuantity: number) => {
-    setQuantity(newQuantity);
-  };
-
-  const resetSelection = () => {
-    setQuantity(1);
-    setSelectedProduct(null);
-  };
+    return `${day}-${month}-${year}`;
+  }
 
   return (
     <div className="bg-white">
-      <div className="mx-auto max-w-2xl px-4 pb-24 pt-16 sm:px-6 lg:max-w-7xl lg:px-8">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          Shopping Cart
-        </h1>
-        <div className="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
-          <section aria-labelledby="cart-heading" className="lg:col-span-7">
-            <h2 id="cart-heading" className="sr-only">
-              Items in your shopping cart
-            </h2>
-            <ul
-              role="list"
-              className="divide-y divide-gray-200 border-b border-t border-gray-200"
-            >
-              {orderedProductList?.map((product, index) => (
-                <li key={product.id} className="flex py-6 sm:py-10">
-                  <div className="flex-shrink-0">
-                    <img
-                      src={product.image}
-                      alt={product.title}
-                      className="h-24 w-24 rounded-md object-cover object-center sm:h-48 sm:w-48"
-                    />
-                  </div>
-                  <div className="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
-                    <div className="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
-                      <div>
-                        <div className="flex justify-between">
-                          <h3 className="text-sm">
-                            <a
-                              href={`/products/${product.id}`}
-                              className="font-medium text-gray-700 hover:text-gray-800"
-                            >
-                              {product.title}
-                            </a>
-                          </h3>
+      <div className="py-16 sm:py-24">
+        <div className="mx-auto max-w-7xl sm:px-2 lg:px-8">
+          <div className="mx-auto max-w-2xl px-4 lg:max-w-4xl lg:px-0">
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+              Order history
+            </h1>
+          </div>
+        </div>
+
+        <div className="mt-16">
+          <h2 className="sr-only">Recent orders</h2>
+          <div className="mx-auto max-w-7xl sm:px-2 lg:px-8">
+            <div className="mx-auto max-w-2xl space-y-8 sm:px-4 lg:max-w-4xl lg:px-0">
+              {orderList &&
+                //@ts-ignore
+                orderList.map((order: Order, index: number) => (
+                  <div
+                    key={index}
+                    className="border-b border-t border-gray-200 bg-white shadow-sm sm:rounded-lg sm:border"
+                  >
+                    <h3 className="sr-only">
+                      Order placed on{" "}
+                      <time dateTime={formatDate(order.created)}>
+                        {formatDate(order.created)}
+                      </time>
+                    </h3>
+
+                    <div className="flex items-center border-b border-gray-200 p-4 sm:grid sm:grid-cols-4 sm:gap-x-6 sm:p-6">
+                      <dl className="grid flex-1 grid-cols-2 gap-x-6 text-sm sm:col-span-3 sm:grid-cols-3 lg:col-span-2">
+                        <div>
+                          <dt className="font-medium text-gray-900">
+                            Order number
+                          </dt>
+                          <dd className="mt-1 text-gray-500">
+                            {order._id.substring(0, 12)}
+                          </dd>
                         </div>
-                        <p className="text-xl font-medium text-red-600">
-                          {product.price}&nbsp;$
-                        </p>
-                        {selectedProduct === product.id ? (
-                          <PlusAmount
-                            initialQuantity={product.amount}
-                            onQuantityChange={handleQuantityChange}
-                          />
-                        ) : (
-                          <p className="text-xl font-bold text-gray-600">
-                            {product.amount}
-                          </p>
-                        )}
-                      </div>
-                      <div className="mt-4 sm:mt-0 sm:pr-9">
-                        <label
-                          htmlFor={`quantity-${index}`}
-                          className="sr-only"
-                        >
-                          {product.title}
-                        </label>
-                        <div className="absolute right-0 top-0">
-                          {selectedProduct === product.id ? (
-                            <button
-                              className="mx-2 inline-flex p-2 text-gray-400 hover:text-gray-500"
-                              onClick={() => handleUpdate(product.id)}
-                            >
-                              <span className="sr-only">Confirm</span>
-                              <CheckIcon
-                                aria-hidden="true"
-                                className="h-5 w-5"
-                              />
-                            </button>
-                          ) : (
-                            <button
-                              className="mx-2 inline-flex p-2 text-gray-400 hover:text-gray-500"
-                              onClick={() => handleEdit(product.id)}
-                            >
-                              <span className="sr-only">Edit</span>
-                              <PencilIcon
-                                aria-hidden="true"
-                                className="h-5 w-5"
-                              />
-                            </button>
-                          )}
-                          <button
-                            className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500"
-                            onClick={() => handleRemove(product.id)}
-                          >
-                            <span className="sr-only">Remove</span>
-                            <XMarkIcon aria-hidden="true" className="h-5 w-5" />
-                          </button>
+                        <div className="hidden sm:block">
+                          <dt className="font-medium text-gray-900">
+                            Date placed
+                          </dt>
+                          <dd className="mt-1 text-gray-500">
+                            <time dateTime={formatDate(order.created)}>
+                              {formatDate(order.created)}
+                            </time>
+                          </dd>
                         </div>
-                      </div>
+                        <div>
+                          <dt className="font-medium text-gray-900">
+                            Total amount
+                          </dt>
+                          <dd className="mt-1 font-medium text-gray-900">
+                            {order.total}
+                          </dd>
+                        </div>
+                      </dl>
                     </div>
+                    <h4 className="sr-only">Items</h4>
+                    <ul role="list" className="divide-y divide-gray-200">
+                      {order.products.map((product) => (
+                        <li key={product.id} className="p-4 sm:p-6">
+                          <div className="flex items-center sm:items-start">
+                            <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200 sm:h-40 sm:w-40">
+                              <img
+                                alt={product.title}
+                                src={product.image}
+                                className="h-full w-full object-cover object-center"
+                              />
+                            </div>
+                            <div className="ml-6 flex-1 text-sm">
+                              <div className="font-medium sm:flex sm:justify-between">
+                                <h5>{product.title}</h5>
+                                <p className="mt-2 text-red-500 sm:mt-0">
+                                  {product.price} &nbsp;$
+                                </p>
+                              </div>
+                              <p className="font-bold text-gray-900 sm:mt-2 sm:block">
+                                {product.category}
+                              </p>
+
+                              <p className="hidden text-gray-500 sm:mt-2 sm:block">
+                                {product.description}
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                </li>
-              ))}
-            </ul>
-          </section>
-          <section
-            aria-labelledby="summary-heading"
-            className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
-          >
-            <h2
-              id="summary-heading"
-              className="text-lg font-medium text-gray-900"
-            >
-              Order summary
-            </h2>
-            <dl className="mt-6 space-y-4">
-              <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-                <dt className="text-base font-medium text-gray-900">
-                  Order total
-                </dt>
-                <dd className="text-base font-medium text-gray-900">
-                  {price.toFixed(2)} $
-                </dd>
-              </div>
-            </dl>
-            <div className="mt-6">
-              <button
-                className="bg-[#ef233c] border-[2px] border-[#ef233c] text-white font-bold w-full rounded-[50px] text-[12px] px-4 py-2 my-2 hover:bg-white hover:text-[#c90f25] hover:border-[#c90f25]"
-                onClick={handlePurchase}
-              >
-                Checkout
-              </button>
+                ))}
             </div>
-          </section>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default Order;
+export default OrderHistory;

@@ -1,11 +1,12 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { useProductContext } from "@/context/ProductContext";
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
 }
 export default function ProductDetail() {
   const { product, setOrderedProductList } = useProductContext();
+  const router = useRouter();
   const handleAddCart =
     (item: {
       id: number;
@@ -17,10 +18,10 @@ export default function ProductDetail() {
       amount?: number;
     }) =>
     () => {
-      // @ts-ignore
+      //@ts-ignore
       setOrderedProductList((prevList) => {
         const existingItemIndex = prevList.findIndex(
-          // @ts-ignore
+          //@ts-ignore
           (product) => product.id === item.id
         );
         if (existingItemIndex !== -1) {
@@ -29,8 +30,10 @@ export default function ProductDetail() {
             ...updatedList[existingItemIndex],
             amount: updatedList[existingItemIndex].amount + 1,
           };
+          router.push("/order");
           return updatedList;
         } else {
+          router.push("/order");
           return [...prevList, { ...item, amount: 1 }];
         }
       });
@@ -74,7 +77,7 @@ export default function ProductDetail() {
               </div>
               <button
                 className="bg-[#ef233c] border-[2px] border-[#ef233c] text-white font-bold w-full rounded-[50px] text-[12px] px-4 py-2 my-2 hover:bg-white hover:text-[#c90f25] hover:border-[#c90f25]"
-                // @ts-ignore
+                //@ts-ignore
                 onClick={handleAddCart(product)}
               >
                 ADD TO CART
