@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const signin = async (req, res) => {
-  console.log(req.body)
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
@@ -24,7 +23,6 @@ const signin = async (req, res) => {
     });
 
     return res.json({
-      success:true,
       token,
       user: { _id: user._id, name: user.name, email: user.email },
     });
@@ -37,7 +35,7 @@ const signin = async (req, res) => {
 
 const signout = (req, res) => {
   res.clearCookie("t");
-  return res.status("200").json({
+  return res.status(200).json({
     message: "signed out",
   });
 };

@@ -13,9 +13,7 @@ const create = async (req, res) => {
     }
     const user = new User({ email, password });
     await user.save();
-    res
-      .status(201)
-      .json({ success: true, message: "Registration was successful" });
+    res.status(200).json({ message: "Registration was successful" });
   } catch (error) {
     res.status(400).json({
       error: errorHandler.getErrorMessage(error),
