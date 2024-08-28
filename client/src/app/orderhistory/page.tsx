@@ -15,7 +15,7 @@ interface Product {
 }
 
 interface Order {
-  number: string;
+  _id: string;
   created: string;
   totalPrice: string;
   products: Product[];
@@ -99,7 +99,7 @@ const OrderHistory = () => {
                             Total amount
                           </dt>
                           <dd className="mt-1 font-medium text-gray-900">
-                            {order.total}
+                            {order.totalPrice}
                           </dd>
                         </div>
                       </dl>
@@ -126,7 +126,9 @@ const OrderHistory = () => {
                               <p className="font-bold text-gray-900 sm:mt-2 sm:block">
                                 {product.category}
                               </p>
-
+                              <p className="font-bold text-gray-900 sm:mt-2 sm:block">
+                                {product.amount}
+                              </p>
                               <p className="hidden text-gray-500 sm:mt-2 sm:block">
                                 {product.description}
                               </p>

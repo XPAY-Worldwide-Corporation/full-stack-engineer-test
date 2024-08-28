@@ -15,7 +15,6 @@ interface Jwt {
   token: string;
   user: User;
 }
-
 interface ProductProps {
   id: number;
   title: string;

@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect, ChangeEvent } from "react";
-
 interface PlusAmountProps {
   initialQuantity?: number;
   onQuantityChange: (quantity: number) => void;

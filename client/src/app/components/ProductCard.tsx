@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useProductContext } from "@/context/ProductContext";
-import { ToastContainer, toast } from "react-toastify";
-
 interface ProductProps {
   id: number;
   title: string;
@@ -54,6 +52,7 @@ const ProductCard: React.FC<ProductProps> = ({
         return [...prevList, { ...item, amount: 1 }];
       }
     });
+    router.push("/order");
   };
 
   return (
